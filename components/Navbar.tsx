@@ -9,7 +9,9 @@ const Navbar = async () => {
         <>
             <header className='px-5 py-3 bg-white shadow-sm text-black'>
                 <nav className='flex justify-between items-center '>
-                    <Link href='/'>logo</Link>
+                    <Link href='/'>
+                        <h1 className='!text-2xl font-bold'>Pitch Center</h1>
+                    </Link>
 
                     <div className='flex items-center gap-5'>
                         {session && session?.user ? (
@@ -41,7 +43,6 @@ const Navbar = async () => {
                                 <button type='submit'>login</button>
                             </form>
                         )}
-                        ;
                     </div>
                 </nav>
             </header>
