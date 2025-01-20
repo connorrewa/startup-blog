@@ -28,7 +28,6 @@ const StartupForm = () => {
             };
 
             await formSchema.parseAsync(formValues);
-            console.log(formValues);
             const result = await createPitch(prevState, formData, pitch);
             if (result.status === 'SUCCESS') {
                 toast({
@@ -40,7 +39,6 @@ const StartupForm = () => {
             router.push(`/startup/${result._id}`);
             return result;
         } catch (error) {
-            console.log(error);
             if (error instanceof z.ZodError) {
                 const fieldErrors = error.flatten().fieldErrors;
                 setErrors(fieldErrors as unknown as Record<string, string>);
