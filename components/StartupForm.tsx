@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useActionState, useState } from 'react';
+import React, { useState, useActionState } from 'react';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import MDEditor from '@uiw/react-md-editor';
@@ -14,9 +14,26 @@ import { createPitch } from '@/lib/actions';
 
 const StartupForm = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [formValues, setFormValues] = useState({
+        title: '',
+        description: '',
+        category: '',
+        link: '',
+    });
     const [pitch, setPitch] = useState('');
     const { toast } = useToast();
     const router = useRouter();
+
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target;
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    };
+
     const handleFormSubmit = async (prevState: any, formData: FormData) => {
         try {
             const formValues = {
@@ -35,9 +52,9 @@ const StartupForm = () => {
                     description: 'Your pitch was created successfully',
                     variant: 'destructive',
                 });
+                router.push(`/startup/${result._id}`);
+                return result;
             }
-            router.push(`/startup/${result._id}`);
-            return result;
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const fieldErrors = error.flatten().fieldErrors;
@@ -50,7 +67,7 @@ const StartupForm = () => {
                 return {
                     ...prevState,
                     error: 'Validation Failed',
-                    variant: 'ERROR',
+                    status: 'ERROR',
                 };
             }
         }
@@ -67,6 +84,7 @@ const StartupForm = () => {
             status: 'ERROR',
         };
     };
+
     const [state, formAction, isPending] = useActionState(handleFormSubmit, {
         error: '',
         status: 'INITIAL',
@@ -85,8 +103,9 @@ const StartupForm = () => {
                         className='startup-form_input'
                         required
                         placeholder='Startup Title'
+                        value={formValues.title}
+                        onChange={handleInputChange}
                     />
-
                     {errors.title && (
                         <p className='startup-form_error'>{errors.title}</p>
                     )}
@@ -102,10 +121,11 @@ const StartupForm = () => {
                         className='startup-form_textarea'
                         required
                         placeholder='Startup Description'
+                        value={formValues.description}
+                        onChange={handleInputChange}
                     />
-
                     {errors.description && (
-                        <p className='startup-foprm_error'>
+                        <p className='startup-form_error'>
                             {errors.description}
                         </p>
                     )}
@@ -121,10 +141,11 @@ const StartupForm = () => {
                         className='startup-form_input'
                         required
                         placeholder='Startup Category (Tech, Health, Education)'
+                        value={formValues.category}
+                        onChange={handleInputChange}
                     />
-
                     {errors.category && (
-                        <p className='startup-foprm_error'>{errors.category}</p>
+                        <p className='startup-form_error'>{errors.category}</p>
                     )}
                 </div>
 
@@ -138,8 +159,9 @@ const StartupForm = () => {
                         className='startup-form_input'
                         required
                         placeholder='Startup Image URL'
+                        value={formValues.link}
+                        onChange={handleInputChange}
                     />
-
                     {errors.link && (
                         <p className='startup-form_error'>{errors.link}</p>
                     )}
@@ -149,7 +171,6 @@ const StartupForm = () => {
                     <label htmlFor='pitch' className='startup-form_label'>
                         Pitch
                     </label>
-
                     <MDEditor
                         value={pitch}
                         onChange={(value) => setPitch(value as string)}
@@ -164,7 +185,6 @@ const StartupForm = () => {
                             disallowedElements: ['style'],
                         }}
                     />
-
                     {errors.pitch && (
                         <p className='startup-form_error'>{errors.pitch}</p>
                     )}

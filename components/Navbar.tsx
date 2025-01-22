@@ -12,7 +12,9 @@ const Navbar = async () => {
             <header className='px-5 py-3 bg-white shadow-sm text-black'>
                 <nav className='flex justify-between items-center '>
                     <Link href='/'>
-                        <h1 className='!text-2xl font-bold'>Pitch Center</h1>
+                        <h1 className='!text-2xl font-bold font-work-sans'>
+                            Pitch Center
+                        </h1>
                     </Link>
 
                     <div className='flex items-center gap-5'>
